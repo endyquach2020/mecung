@@ -5,8 +5,7 @@ import { MazeBoard } from './components/MazeBoard';
 import { ControlPanel } from './components/ControlPanel';
 import { QuestionModal } from './components/QuestionModal';
 import { VictoryModal } from './components/VictoryModal';
-import { BookOpen, Volume2, VolumeX } from 'lucide-react';
-import { QUESTIONS } from './data/questions';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export default function App() {
   const [maze, setMaze] = useState<MazeData>(() => generateRandomMaze());
@@ -21,9 +20,6 @@ export default function App() {
 
   // Sound & Music
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-
-  // Question bank modal for reference
-  const [showQuestionBank, setShowQuestionBank] = useState(false);
 
   // Timer reference
   const timerRef = useRef<number | null>(null);
@@ -194,29 +190,20 @@ export default function App() {
           <strong className="text-slate-800">LỐI RA</strong>
         </p>
 
-        {/* Quick Utility Toolbar in top right */}
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-end gap-2 -mt-7 sm:-mt-8">
+        {/* Music toggle in top right */}
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-end -mt-7 sm:-mt-8">
           <button
             type="button"
             onClick={handleToggleMusic}
             title={isMusicPlaying ? 'Tắt nhạc nền' : 'Bật nhạc nền kịch tính'}
-            className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition shadow-xs cursor-pointer flex items-center gap-1.5 text-xs font-medium"
+            className="p-2 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition shadow-xs cursor-pointer flex items-center gap-1.5 text-xs font-medium"
           >
             {isMusicPlaying ? (
               <Volume2 className="w-4 h-4 text-emerald-600 animate-pulse" />
             ) : (
               <VolumeX className="w-4 h-4 text-slate-500" />
             )}
-            <span className="hidden md:inline">{isMusicPlaying ? 'Tắt nhạc' : 'Bật nhạc'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowQuestionBank(true)}
-            className="p-2 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition shadow-xs cursor-pointer flex items-center gap-1.5 text-xs font-medium"
-          >
-            <BookOpen className="w-4 h-4 text-blue-600" />
-            <span className="hidden sm:inline">24 Câu hỏi Tin học</span>
+            <span className="hidden sm:inline">{isMusicPlaying ? 'Tắt nhạc nền' : 'Bật nhạc nền'}</span>
           </button>
         </div>
       </header>
@@ -270,70 +257,6 @@ export default function App() {
           onRestart={handleResetPosition}
           onNewMaze={handleNewMaze}
         />
-      )}
-
-      {/* Question Bank Modal for Reference */}
-      {showQuestionBank && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="relative w-full max-w-3xl max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
-            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <div className="flex items-center gap-2.5">
-                <BookOpen className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-base sm:text-lg">
-                  Bộ 24 Câu Hỏi Tin Học (Quản Lý Tệp & Thư Mục)
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowQuestionBank(false)}
-                className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center text-sm font-bold cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-5 overflow-y-auto space-y-4 divide-y divide-slate-100">
-              {QUESTIONS.map((q) => (
-                <div key={q.id} className="pt-3 first:pt-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
-                      Câu {q.id}
-                    </span>
-                    <span className="text-xs text-slate-500 font-medium">
-                      {q.obstacleType === 'rock' ? '🪨 Khối đá' : '⚡ Bẫy gai'} · {q.topic}
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900 mb-2">{q.question}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    {q.options.map((opt) => (
-                      <div
-                        key={opt.key}
-                        className={`p-2 rounded-lg border flex items-start gap-1.5 ${
-                          opt.key === q.correct
-                            ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-semibold underline decoration-emerald-600 underline-offset-4'
-                            : 'bg-slate-50 border-slate-200 text-slate-700'
-                        }`}
-                      >
-                        <span className="font-bold">{opt.key}.</span>
-                        <span>{opt.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-4 border-t border-slate-200 bg-slate-50 text-right">
-              <button
-                type="button"
-                onClick={() => setShowQuestionBank(false)}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition cursor-pointer"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
